@@ -113,13 +113,18 @@ export default defineConfig(({ command, mode }) => {
             const info = assetInfo.name.split('.');
             const ext = info[info.length - 1];
             
-            // Organize assets by type
-            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            if (/\.(png|jpe?g|svg|gif|tiff|bmp|ico|webp)$/i.test(assetInfo.name)) {
               return `assets/images/[name]-[hash][extname]`;
             }
-            if (/woff|woff2|eot|ttf|otf/i.test(ext)) {
+            
+            if (/\.(woff2?|eot|ttf|otf)$/i.test(assetInfo.name)) {
               return `assets/fonts/[name]-[hash][extname]`;
             }
+            
+            if (ext === 'css') {
+              return `assets/css/[name]-[hash][extname]`;
+            }
+            
             return `assets/[name]-[hash][extname]`;
           },
           
@@ -140,13 +145,10 @@ export default defineConfig(({ command, mode }) => {
       // Build target
       target: 'es2015',
       
-      // Report compressed size
-      reportCompressedSize: true,
+      // Enable/disable reporting compressed size
+      reportCompressedSize: isProduction,
       
-      // Write bundle to disk
-      write: true,
-      
-      // Empty outDir on build
+      // Emit assets during build
       emptyOutDir: true,
     },
 
@@ -181,32 +183,29 @@ export default defineConfig(({ command, mode }) => {
         '@utils': resolve(__dirname, './src/utils'),
         '@styles': resolve(__dirname, './src/styles'),
       },
-      extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx'],
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
 
     // Environment variables configuration
     envPrefix: 'VITE_',
 
-    // Define global constants
-    define: {
-      __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
-      __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-    },
-
-    // Logging level
-    logLevel: 'info',
-
-    // Clear screen on server start
-    clearScreen: true,
-
-    // ESBuild configuration
+    // Enable esbuild for faster builds
     esbuild: {
-      jsxFactory: 'h',
-      jsxFragment: 'Fragment',
-      jsxInject: '',
-      logOverride: {
-        'this-is-undefined-in-esm': 'silent',
-      },
+      logOverride: { 'this-is-undefined-in-esm': 'silent' },
+      legalComments: 'none',
+      target: 'es2015',
     },
+
+    // JSON handling
+    json: {
+      namedExports: true,
+      stringify: false,
+    },
+
+    // Log level
+    logLevel: isDevelopment ? 'info' : 'warn',
+
+    // Clear screen on rebuild
+    clearScreen: true,
   };
 });
