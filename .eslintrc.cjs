@@ -90,12 +90,12 @@ module.exports = {
     ],
     'import/no-unresolved': 'error',
     'import/no-duplicates': 'error',
-    'import/no-named-as-default': 'warn',
-    'import/no-named-as-default-member': 'warn',
+    'import/no-unused-modules': 'warn',
+    'import/first': 'error',
     'import/newline-after-import': 'error',
-    'import/no-anonymous-default-export': 'warn',
+    'import/no-default-export': 'off',
     
-    // Accessibility Rules
+    // Accessibility
     'jsx-a11y/anchor-is-valid': 'error',
     'jsx-a11y/alt-text': 'error',
     'jsx-a11y/aria-props': 'error',
@@ -112,7 +112,7 @@ module.exports = {
     
     // Comments and Documentation
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
-    'multiline-comment-style': ['warn', 'starred-block'],
+    'multiline-comment-style': ['error', 'starred-block'],
     
     // Error Prevention
     'no-throw-literal': 'error',
