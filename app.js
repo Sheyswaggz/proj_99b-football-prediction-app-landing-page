@@ -415,45 +415,47 @@ class Carousel {
       this.carousel.addEventListener('mouseleave', () => this.resumeAutoPlay());
     }
 
-    // Touch events for mobile swipe
+    // Touch/swipe support
     this.setupTouchEvents();
   }
 
   setupTouchEvents() {
-    let touchStartX = 0;
-    let touchEndX = 0;
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
 
     this.track.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
+      startX = e.touches[0].clientX;
+      isDragging = true;
+      this.pauseAutoPlay();
+    });
 
-    this.track.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      this.handleSwipe(touchStartX, touchEndX);
-    }, { passive: true });
-  }
+    this.track.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX;
+    });
 
-  handleSwipe(startX, endX) {
-    const swipeThreshold = 50;
-    const diff = startX - endX;
+    this.track.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
 
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        this.next();
-      } else {
-        this.prev();
+      const diff = startX - currentX;
+      if (Math.abs(diff) > 50) {
+        diff > 0 ? this.next() : this.prev();
       }
-    }
-  }
 
-  next() {
-    this.currentIndex = (this.currentIndex + 1) % this.slides.length;
-    this.updateCarousel();
-    this.resetAutoPlay();
+      this.resumeAutoPlay();
+    });
   }
 
   prev() {
     this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+    this.updateCarousel();
+    this.resetAutoPlay();
+  }
+
+  next() {
+    this.currentIndex = (this.currentIndex + 1) % this.slides.length;
     this.updateCarousel();
     this.resetAutoPlay();
   }
@@ -468,42 +470,44 @@ class Carousel {
     const offset = -this.currentIndex * 100;
     this.track.style.transform = `translateX(${offset}%)`;
 
-    // Update dots
+    // Update active states
+    this.slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === this.currentIndex);
+      slide.setAttribute('aria-hidden', index !== this.currentIndex);
+    });
+
     if (this.dots) {
       this.dots.forEach((dot, index) => {
         dot.classList.toggle('active', index === this.currentIndex);
+        dot.setAttribute('aria-current', index === this.currentIndex);
       });
     }
-
-    // Update buttons state
-    this.slides.forEach((slide, index) => {
-      slide.setAttribute('aria-hidden', index !== this.currentIndex);
-    });
   }
 
   startAutoPlay() {
     if (!this.isAutoPlay) return;
-    
-    this.autoPlayInterval = setInterval(() => {
-      if (!this.isPaused) {
-        this.next();
-      }
-    }, this.autoPlayDelay);
+    this.autoPlayInterval = setInterval(() => this.next(), this.autoPlayDelay);
   }
 
   pauseAutoPlay() {
     this.isPaused = true;
+    if (this.autoPlayInterval) {
+      clearInterval(this.autoPlayInterval);
+    }
   }
 
   resumeAutoPlay() {
-    this.isPaused = false;
+    if (this.isAutoPlay && this.isPaused) {
+      this.isPaused = false;
+      this.startAutoPlay();
+    }
   }
 
   resetAutoPlay() {
-    if (!this.isAutoPlay) return;
-    
-    clearInterval(this.autoPlayInterval);
-    this.startAutoPlay();
+    if (this.isAutoPlay) {
+      this.pauseAutoPlay();
+      this.resumeAutoPlay();
+    }
   }
 
   destroy() {
@@ -524,26 +528,10 @@ class FormValidator {
     this.submitButton = form.querySelector('[type="submit"]');
     
     this.validationRules = {
-      email: {
-        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: 'Please enter a valid email address'
-      },
-      phone: {
-        pattern: /^[\d\s\-\+\(\)]+$/,
-        message: 'Please enter a valid phone number'
-      },
-      required: {
-        pattern: /.+/,
-        message: 'This field is required'
-      },
-      minLength: {
-        validate: (value, min) => value.length >= min,
-        message: (min) => `Minimum ${min} characters required`
-      },
-      maxLength: {
-        validate: (value, max) => value.length <= max,
-        message: (max) => `Maximum ${max} characters allowed`
-      }
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      phone: /^[\d\s\-\+\(\)]+$/,
+      url: /^https?:\/\/.+/,
+      number: /^\d+$/
     };
 
     this.init();
@@ -557,93 +545,37 @@ class FormValidator {
   }
 
   bindEvents() {
-    // Real-time validation on blur
+    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+
     this.fields.forEach(field => {
       field.addEventListener('blur', () => this.validateField(field));
-      field.addEventListener('input', () => this.clearError(field));
+      field.addEventListener('input', debounce(() => {
+        if (field.classList.contains('error')) {
+          this.validateField(field);
+        }
+      }, 500));
     });
-
-    // Form submission
-    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
   }
 
   setupAccessibility() {
     this.fields.forEach(field => {
-      const fieldId = field.id || `field-${Math.random().toString(36).substr(2, 9)}`;
-      field.id = fieldId;
-      
-      const errorId = `${fieldId}-error`;
+      const errorId = `${field.id || field.name}-error`;
       field.setAttribute('aria-describedby', errorId);
     });
   }
 
-  validateField(field) {
-    const value = field.value.trim();
-    const validationType = field.getAttribute('data-validate');
-    const isRequired = field.hasAttribute('required');
+  handleSubmit(e) {
+    e.preventDefault();
 
-    // Check if field is empty and required
-    if (isRequired && !value) {
-      this.showError(field, 'This field is required');
-      return false;
-    }
+    const isValid = this.validateForm();
 
-    // Skip validation if field is empty and not required
-    if (!value && !isRequired) {
-      this.clearError(field);
-      return true;
-    }
-
-    // Validate based on type
-    const rule = this.validationRules[validationType];
-    if (!rule) {
-      return true;
-    }
-
-    // Pattern-based validation
-    if (rule.pattern && !rule.pattern.test(value)) {
-      this.showError(field, rule.message);
-      return false;
-    }
-
-    // Custom validation functions
-    if (rule.validate) {
-      const param = field.getAttribute(`data-${validationType}`);
-      if (!rule.validate(value, param)) {
-        const message = typeof rule.message === 'function' 
-          ? rule.message(param) 
-          : rule.message;
-        this.showError(field, message);
-        return false;
+    if (isValid) {
+      this.submitForm();
+    } else {
+      const firstError = this.form.querySelector('.error');
+      if (firstError) {
+        firstError.focus();
       }
-    }
-
-    this.clearError(field);
-    return true;
-  }
-
-  showError(field, message) {
-    this.clearError(field);
-
-    field.classList.add('error');
-    field.setAttribute('aria-invalid', 'true');
-
-    const errorElement = document.createElement('span');
-    errorElement.className = 'error-message';
-    errorElement.id = `${field.id}-error`;
-    errorElement.textContent = message;
-    errorElement.setAttribute('role', 'alert');
-
-    field.parentElement.appendChild(errorElement);
-  }
-
-  clearError(field) {
-    field.classList.remove('error');
-    field.setAttribute('aria-invalid', 'false');
-
-    const errorElement = field.parentElement.querySelector('.error-message');
-    if (errorElement) {
-      errorElement.remove();
     }
   }
 
@@ -659,35 +591,133 @@ class FormValidator {
     return isValid;
   }
 
-  async handleSubmit(e) {
-    e.preventDefault();
+  validateField(field) {
+    const value = field.value.trim();
+    const validationType = field.getAttribute('data-validate');
+    const isRequired = field.hasAttribute('required');
+    const minLength = field.getAttribute('minlength');
+    const maxLength = field.getAttribute('maxlength');
 
-    if (!this.validateForm()) {
-      // Focus first error field
-      const firstError = this.form.querySelector('.error');
-      if (firstError) {
-        firstError.focus();
-      }
-      return;
+    // Clear previous errors
+    this.clearError(field);
+
+    // Check required
+    if (isRequired && !value) {
+      this.showError(field, 'This field is required');
+      return false;
     }
 
-    // Disable submit button
+    // Skip other validations if field is empty and not required
+    if (!value && !isRequired) {
+      return true;
+    }
+
+    // Check min length
+    if (minLength && value.length < parseInt(minLength, 10)) {
+      this.showError(field, `Minimum ${minLength} characters required`);
+      return false;
+    }
+
+    // Check max length
+    if (maxLength && value.length > parseInt(maxLength, 10)) {
+      this.showError(field, `Maximum ${maxLength} characters allowed`);
+      return false;
+    }
+
+    // Check validation type
+    if (validationType && this.validationRules[validationType]) {
+      if (!this.validationRules[validationType].test(value)) {
+        this.showError(field, this.getErrorMessage(validationType));
+        return false;
+      }
+    }
+
+    // Custom validation
+    const customValidator = field.getAttribute('data-validator');
+    if (customValidator && typeof window[customValidator] === 'function') {
+      const customResult = window[customValidator](value);
+      if (customResult !== true) {
+        this.showError(field, customResult);
+        return false;
+      }
+    }
+
+    this.showSuccess(field);
+    return true;
+  }
+
+  showError(field, message) {
+    field.classList.add('error');
+    field.classList.remove('success');
+    field.setAttribute('aria-invalid', 'true');
+
+    const errorElement = this.getErrorElement(field);
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+  }
+
+  showSuccess(field) {
+    field.classList.remove('error');
+    field.classList.add('success');
+    field.setAttribute('aria-invalid', 'false');
+
+    const errorElement = this.getErrorElement(field);
+    errorElement.style.display = 'none';
+  }
+
+  clearError(field) {
+    field.classList.remove('error', 'success');
+    field.removeAttribute('aria-invalid');
+
+    const errorElement = this.getErrorElement(field);
+    errorElement.style.display = 'none';
+  }
+
+  getErrorElement(field) {
+    const errorId = `${field.id || field.name}-error`;
+    let errorElement = document.getElementById(errorId);
+
+    if (!errorElement) {
+      errorElement = document.createElement('span');
+      errorElement.id = errorId;
+      errorElement.className = 'error-message';
+      errorElement.setAttribute('role', 'alert');
+      field.parentNode.appendChild(errorElement);
+    }
+
+    return errorElement;
+  }
+
+  getErrorMessage(type) {
+    const messages = {
+      email: 'Please enter a valid email address',
+      phone: 'Please enter a valid phone number',
+      url: 'Please enter a valid URL',
+      number: 'Please enter a valid number'
+    };
+
+    return messages[type] || 'Invalid input';
+  }
+
+  async submitForm() {
     if (this.submitButton) {
       this.submitButton.disabled = true;
-      this.submitButton.textContent = 'Sending...';
+      this.submitButton.textContent = 'Submitting...';
     }
 
     try {
       const formData = new FormData(this.form);
       const data = Object.fromEntries(formData.entries());
 
-      // Simulate API call (replace with actual endpoint)
-      await this.submitFormData(data);
+      // Simulate API call
+      await this.sendFormData(data);
 
-      this.showSuccess();
+      this.showSuccessMessage();
       this.form.reset();
+      this.fields.forEach(field => this.clearError(field));
     } catch (error) {
-      this.showSubmitError(error.message);
+      console.error('Form submission error:', error);
+      this.showErrorMessage('An error occurred. Please try again.');
     } finally {
       if (this.submitButton) {
         this.submitButton.disabled = false;
@@ -696,40 +726,36 @@ class FormValidator {
     }
   }
 
-  async submitFormData(data) {
+  async sendFormData(data) {
     // Replace with actual API endpoint
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         console.log('Form data:', data);
-        resolve({ success: true });
+        resolve();
       }, 1000);
     });
   }
 
-  showSuccess() {
-    const successMessage = document.createElement('div');
-    successMessage.className = 'form-success';
-    successMessage.textContent = 'Thank you! Your message has been sent successfully.';
-    successMessage.setAttribute('role', 'status');
+  showSuccessMessage() {
+    const message = document.createElement('div');
+    message.className = 'form-message success';
+    message.textContent = 'Form submitted successfully!';
+    message.setAttribute('role', 'status');
     
-    this.form.insertAdjacentElement('beforebegin', successMessage);
-
-    setTimeout(() => {
-      successMessage.remove();
-    }, 5000);
+    this.form.insertBefore(message, this.form.firstChild);
+    
+    setTimeout(() => message.remove(), 5000);
   }
 
-  showSubmitError(message) {
-    const errorMessage = document.createElement('div');
-    errorMessage.className = 'form-error';
-    errorMessage.textContent = `Error: ${message}. Please try again.`;
-    errorMessage.setAttribute('role', 'alert');
+  showErrorMessage(text) {
+    const message = document.createElement('div');
+    message.className = 'form-message error';
+    message.textContent = text;
+    message.setAttribute('role', 'alert');
     
-    this.form.insertAdjacentElement('beforebegin', errorMessage);
-
-    setTimeout(() => {
-      errorMessage.remove();
-    }, 5000);
+    this.form.insertBefore(message, this.form.firstChild);
+    
+    setTimeout(() => message.remove(), 5000);
   }
 }
 
@@ -740,6 +766,8 @@ class FormValidator {
 class LazyLoader {
   constructor() {
     this.images = document.querySelectorAll('img[data-src], img[data-srcset]');
+    this.iframes = document.querySelectorAll('iframe[data-src]');
+    
     this.observerOptions = {
       rootMargin: '50px 0px',
       threshold: 0.01
@@ -760,48 +788,63 @@ class LazyLoader {
       this.observerOptions
     );
 
-    this.images.forEach(image => {
-      this.observer.observe(image);
-    });
+    this.images.forEach(img => this.observer.observe(img));
+    this.iframes.forEach(iframe => this.observer.observe(iframe));
   }
 
   handleIntersection(entries) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        this.loadImage(entry.target);
+        this.loadElement(entry.target);
         this.observer.unobserve(entry.target);
       }
     });
   }
 
-  loadImage(image) {
-    const src = image.getAttribute('data-src');
-    const srcset = image.getAttribute('data-srcset');
-
-    if (src) {
-      image.src = src;
-      image.removeAttribute('data-src');
+  loadElement(element) {
+    if (element.tagName === 'IMG') {
+      this.loadImage(element);
+    } else if (element.tagName === 'IFRAME') {
+      this.loadIframe(element);
     }
+  }
+
+  loadImage(img) {
+    const src = img.getAttribute('data-src');
+    const srcset = img.getAttribute('data-srcset');
 
     if (srcset) {
-      image.srcset = srcset;
-      image.removeAttribute('data-srcset');
+      img.srcset = srcset;
     }
 
-    image.classList.add('loaded');
+    if (src) {
+      img.src = src;
+    }
 
-    image.addEventListener('load', () => {
-      image.classList.add('fade-in');
-    }, { once: true });
+    img.addEventListener('load', () => {
+      img.classList.add('loaded');
+      img.removeAttribute('data-src');
+      img.removeAttribute('data-srcset');
+    });
 
-    image.addEventListener('error', () => {
-      console.error(`Failed to load image: ${src || srcset}`);
-      image.classList.add('error');
-    }, { once: true });
+    img.addEventListener('error', () => {
+      console.error('Failed to load image:', src);
+      img.classList.add('error');
+    });
+  }
+
+  loadIframe(iframe) {
+    const src = iframe.getAttribute('data-src');
+    
+    if (src) {
+      iframe.src = src;
+      iframe.removeAttribute('data-src');
+    }
   }
 
   loadAllImages() {
-    this.images.forEach(image => this.loadImage(image));
+    this.images.forEach(img => this.loadImage(img));
+    this.iframes.forEach(iframe => this.loadIframe(iframe));
   }
 }
 
@@ -811,9 +854,9 @@ class LazyLoader {
 
 class HeaderScroll {
   constructor() {
-    this.header = document.querySelector('.header, header');
+    this.header = document.querySelector('header, .header');
+    this.lastScroll = 0;
     this.scrollThreshold = 100;
-    this.lastScrollTop = 0;
 
     this.init();
   }
@@ -825,177 +868,126 @@ class HeaderScroll {
   }
 
   handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const currentScroll = window.pageYOffset;
 
-    // Add/remove scrolled class
-    if (scrollTop > this.scrollThreshold) {
+    // Add scrolled class
+    if (currentScroll > this.scrollThreshold) {
       this.header.classList.add('scrolled');
     } else {
       this.header.classList.remove('scrolled');
     }
 
     // Hide/show header on scroll
-    if (scrollTop > this.lastScrollTop && scrollTop > this.scrollThreshold) {
+    if (currentScroll > this.lastScroll && currentScroll > this.scrollThreshold) {
       this.header.classList.add('hidden');
     } else {
       this.header.classList.remove('hidden');
     }
 
-    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    this.lastScroll = currentScroll;
   }
 }
 
 // ============================================
-// MODAL HANDLER
+// BACK TO TOP BUTTON
 // ============================================
 
-class ModalHandler {
+class BackToTop {
   constructor() {
-    this.modals = document.querySelectorAll('[data-modal]');
-    this.triggers = document.querySelectorAll('[data-modal-trigger]');
-    this.activeModal = null;
+    this.button = document.querySelector('.back-to-top');
+    this.showThreshold = 300;
 
     this.init();
   }
 
   init() {
-    if (this.triggers.length === 0) return;
+    if (!this.button) return;
 
-    this.bindEvents();
+    window.addEventListener('scroll', throttle(() => this.handleScroll(), 100));
+    this.button.addEventListener('click', () => this.scrollToTop());
   }
 
-  bindEvents() {
-    // Open modal triggers
-    this.triggers.forEach(trigger => {
-      trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        const modalId = trigger.getAttribute('data-modal-trigger');
-        this.openModal(modalId);
-      });
-    });
-
-    // Close buttons
-    this.modals.forEach(modal => {
-      const closeButtons = modal.querySelectorAll('[data-modal-close]');
-      closeButtons.forEach(button => {
-        button.addEventListener('click', () => this.closeModal());
-      });
-
-      // Close on overlay click
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          this.closeModal();
-        }
-      });
-    });
-
-    // Close on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.activeModal) {
-        this.closeModal();
-      }
-    });
-  }
-
-  openModal(modalId) {
-    const modal = document.querySelector(`[data-modal="${modalId}"]`);
-    if (!modal) return;
-
-    this.activeModal = modal;
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    // Focus first focusable element
-    const focusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    if (focusable) {
-      setTimeout(() => focusable.focus(), 100);
+  handleScroll() {
+    if (window.pageYOffset > this.showThreshold) {
+      this.button.classList.add('visible');
+    } else {
+      this.button.classList.remove('visible');
     }
   }
 
-  closeModal() {
-    if (!this.activeModal) return;
-
-    this.activeModal.classList.remove('active');
-    document.body.style.overflow = '';
-    this.activeModal = null;
+  scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 }
 
 // ============================================
-// INITIALIZATION
+// APPLICATION INITIALIZATION
 // ============================================
 
 class App {
   constructor() {
     this.components = [];
+    this.isInitialized = false;
   }
 
   init() {
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
-    } else {
-      this.initializeComponents();
+    if (this.isInitialized) {
+      console.warn('App already initialized');
+      return;
     }
-  }
 
-  initializeComponents() {
     try {
-      // Initialize mobile navigation
+      // Initialize core components
       this.components.push(new MobileNavigation());
-
-      // Initialize smooth scrolling
       this.components.push(new SmoothScroll());
-
-      // Initialize scroll animations
       this.components.push(new ScrollAnimations());
-
-      // Initialize statistics counter
       this.components.push(new StatisticsCounter());
+      this.components.push(new LazyLoader());
+      this.components.push(new HeaderScroll());
+      this.components.push(new BackToTop());
 
       // Initialize carousels
-      const carousels = document.querySelectorAll('.carousel');
-      carousels.forEach(carousel => {
+      document.querySelectorAll('.carousel').forEach(carousel => {
         this.components.push(new Carousel(carousel));
       });
 
-      // Initialize form validation
-      const forms = document.querySelectorAll('form[data-validate-form]');
-      forms.forEach(form => {
+      // Initialize forms
+      document.querySelectorAll('form[data-validate-form]').forEach(form => {
         this.components.push(new FormValidator(form));
       });
 
-      // Initialize lazy loading
-      this.components.push(new LazyLoader());
-
-      // Initialize header scroll behavior
-      this.components.push(new HeaderScroll());
-
-      // Initialize modal handler
-      this.components.push(new ModalHandler());
-
-      console.log('✅ Application initialized successfully');
+      this.isInitialized = true;
+      console.log('App initialized successfully');
     } catch (error) {
-      console.error('❌ Error initializing application:', error);
+      console.error('App initialization error:', error);
     }
   }
 
   destroy() {
     this.components.forEach(component => {
-      if (component.destroy && typeof component.destroy === 'function') {
+      if (typeof component.destroy === 'function') {
         component.destroy();
       }
     });
     this.components = [];
+    this.isInitialized = false;
   }
 }
 
 // ============================================
-// START APPLICATION
+// INITIALIZE ON DOM READY
 // ============================================
 
 const app = new App();
-app.init();
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => app.init());
+} else {
+  app.init();
+}
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
@@ -1009,7 +1001,7 @@ if (typeof module !== 'undefined' && module.exports) {
     FormValidator,
     LazyLoader,
     HeaderScroll,
-    ModalHandler,
+    BackToTop,
     debounce,
     throttle,
     isInViewport,
