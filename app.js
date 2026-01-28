@@ -541,12 +541,10 @@ class FormValidator {
     if (!this.form) return;
 
     this.bindEvents();
-    this.setupAccessibility();
   }
 
   bindEvents() {
-    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-
+    // Real-time validation
     this.fields.forEach(field => {
       field.addEventListener('blur', () => this.validateField(field));
       field.addEventListener('input', debounce(() => {
@@ -555,40 +553,9 @@ class FormValidator {
         }
       }, 500));
     });
-  }
 
-  setupAccessibility() {
-    this.fields.forEach(field => {
-      const errorId = `${field.id || field.name}-error`;
-      field.setAttribute('aria-describedby', errorId);
-    });
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-
-    const isValid = this.validateForm();
-
-    if (isValid) {
-      this.submitForm();
-    } else {
-      const firstError = this.form.querySelector('.error');
-      if (firstError) {
-        firstError.focus();
-      }
-    }
-  }
-
-  validateForm() {
-    let isValid = true;
-
-    this.fields.forEach(field => {
-      if (!this.validateField(field)) {
-        isValid = false;
-      }
-    });
-
-    return isValid;
+    // Form submission
+    this.form.addEventListener('submit', (e) => this.handleSubmit(e));
   }
 
   validateField(field) {
@@ -601,30 +568,29 @@ class FormValidator {
     // Clear previous errors
     this.clearError(field);
 
-    // Check required
+    // Required check
     if (isRequired && !value) {
       this.showError(field, 'This field is required');
       return false;
     }
 
-    // Skip other validations if field is empty and not required
+    // Skip further validation if field is empty and not required
     if (!value && !isRequired) {
       return true;
     }
 
-    // Check min length
+    // Length validation
     if (minLength && value.length < parseInt(minLength, 10)) {
       this.showError(field, `Minimum ${minLength} characters required`);
       return false;
     }
 
-    // Check max length
     if (maxLength && value.length > parseInt(maxLength, 10)) {
       this.showError(field, `Maximum ${maxLength} characters allowed`);
       return false;
     }
 
-    // Check validation type
+    // Type validation
     if (validationType && this.validationRules[validationType]) {
       if (!this.validationRules[validationType].test(value)) {
         this.showError(field, this.getErrorMessage(validationType));
@@ -635,57 +601,15 @@ class FormValidator {
     // Custom validation
     const customValidator = field.getAttribute('data-validator');
     if (customValidator && typeof window[customValidator] === 'function') {
-      const customResult = window[customValidator](value);
-      if (customResult !== true) {
-        this.showError(field, customResult);
+      const result = window[customValidator](value);
+      if (result !== true) {
+        this.showError(field, result);
         return false;
       }
     }
 
     this.showSuccess(field);
     return true;
-  }
-
-  showError(field, message) {
-    field.classList.add('error');
-    field.classList.remove('success');
-    field.setAttribute('aria-invalid', 'true');
-
-    const errorElement = this.getErrorElement(field);
-    errorElement.textContent = message;
-    errorElement.style.display = 'block';
-  }
-
-  showSuccess(field) {
-    field.classList.remove('error');
-    field.classList.add('success');
-    field.setAttribute('aria-invalid', 'false');
-
-    const errorElement = this.getErrorElement(field);
-    errorElement.style.display = 'none';
-  }
-
-  clearError(field) {
-    field.classList.remove('error', 'success');
-    field.removeAttribute('aria-invalid');
-
-    const errorElement = this.getErrorElement(field);
-    errorElement.style.display = 'none';
-  }
-
-  getErrorElement(field) {
-    const errorId = `${field.id || field.name}-error`;
-    let errorElement = document.getElementById(errorId);
-
-    if (!errorElement) {
-      errorElement = document.createElement('span');
-      errorElement.id = errorId;
-      errorElement.className = 'error-message';
-      errorElement.setAttribute('role', 'alert');
-      field.parentNode.appendChild(errorElement);
-    }
-
-    return errorElement;
   }
 
   getErrorMessage(type) {
@@ -695,30 +619,95 @@ class FormValidator {
       url: 'Please enter a valid URL',
       number: 'Please enter a valid number'
     };
-
     return messages[type] || 'Invalid input';
   }
 
-  async submitForm() {
+  showError(field, message) {
+    field.classList.add('error');
+    field.classList.remove('success');
+    field.setAttribute('aria-invalid', 'true');
+
+    let errorElement = field.parentElement.querySelector('.error-message');
+    if (!errorElement) {
+      errorElement = document.createElement('span');
+      errorElement.classList.add('error-message');
+      errorElement.setAttribute('role', 'alert');
+      field.parentElement.appendChild(errorElement);
+    }
+    errorElement.textContent = message;
+  }
+
+  showSuccess(field) {
+    field.classList.remove('error');
+    field.classList.add('success');
+    field.setAttribute('aria-invalid', 'false');
+    this.clearError(field);
+  }
+
+  clearError(field) {
+    const errorElement = field.parentElement.querySelector('.error-message');
+    if (errorElement) {
+      errorElement.remove();
+    }
+  }
+
+  validateForm() {
+    let isValid = true;
+    this.fields.forEach(field => {
+      if (!this.validateField(field)) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    if (!this.validateForm()) {
+      // Focus first error field
+      const firstError = this.form.querySelector('.error');
+      if (firstError) {
+        firstError.focus();
+      }
+      return;
+    }
+
+    // Disable submit button
     if (this.submitButton) {
       this.submitButton.disabled = true;
       this.submitButton.textContent = 'Submitting...';
     }
 
+    // Get form data
+    const formData = new FormData(this.form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Submit form (customize this based on your needs)
+    this.submitForm(data);
+  }
+
+  async submitForm(data) {
     try {
-      const formData = new FormData(this.form);
-      const data = Object.fromEntries(formData.entries());
+      // Example: Send to API endpoint
+      const response = await fetch(this.form.action || '/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
 
-      // Simulate API call
-      await this.sendFormData(data);
+      if (!response.ok) {
+        throw new Error('Submission failed');
+      }
 
-      this.showSuccessMessage();
-      this.form.reset();
-      this.fields.forEach(field => this.clearError(field));
+      const result = await response.json();
+      this.handleSuccess(result);
     } catch (error) {
-      console.error('Form submission error:', error);
-      this.showErrorMessage('An error occurred. Please try again.');
+      this.handleError(error);
     } finally {
+      // Re-enable submit button
       if (this.submitButton) {
         this.submitButton.disabled = false;
         this.submitButton.textContent = 'Submit';
@@ -726,36 +715,32 @@ class FormValidator {
     }
   }
 
-  async sendFormData(data) {
-    // Replace with actual API endpoint
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Form data:', data);
-        resolve();
-      }, 1000);
+  handleSuccess(result) {
+    // Show success message
+    const successMessage = document.createElement('div');
+    successMessage.classList.add('form-success');
+    successMessage.textContent = 'Form submitted successfully!';
+    this.form.insertBefore(successMessage, this.form.firstChild);
+
+    // Reset form
+    this.form.reset();
+    this.fields.forEach(field => {
+      field.classList.remove('success', 'error');
     });
+
+    // Remove success message after 5 seconds
+    setTimeout(() => successMessage.remove(), 5000);
   }
 
-  showSuccessMessage() {
-    const message = document.createElement('div');
-    message.className = 'form-message success';
-    message.textContent = 'Form submitted successfully!';
-    message.setAttribute('role', 'status');
+  handleError(error) {
+    console.error('Form submission error:', error);
     
-    this.form.insertBefore(message, this.form.firstChild);
-    
-    setTimeout(() => message.remove(), 5000);
-  }
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('form-error');
+    errorMessage.textContent = 'An error occurred. Please try again.';
+    this.form.insertBefore(errorMessage, this.form.firstChild);
 
-  showErrorMessage(text) {
-    const message = document.createElement('div');
-    message.className = 'form-message error';
-    message.textContent = text;
-    message.setAttribute('role', 'alert');
-    
-    this.form.insertBefore(message, this.form.firstChild);
-    
-    setTimeout(() => message.remove(), 5000);
+    setTimeout(() => errorMessage.remove(), 5000);
   }
 }
 
@@ -767,38 +752,36 @@ class LazyLoader {
   constructor() {
     this.images = document.querySelectorAll('img[data-src], img[data-srcset]');
     this.iframes = document.querySelectorAll('iframe[data-src]');
-    
-    this.observerOptions = {
-      rootMargin: '50px 0px',
-      threshold: 0.01
-    };
-
     this.init();
   }
 
   init() {
-    if (!('IntersectionObserver' in window)) {
-      // Fallback: load all images immediately
-      this.loadAllImages();
-      return;
+    if ('IntersectionObserver' in window) {
+      this.setupObserver();
+    } else {
+      // Fallback: load all immediately
+      this.loadAll();
     }
+  }
 
-    this.observer = new IntersectionObserver(
-      (entries) => this.handleIntersection(entries),
-      this.observerOptions
-    );
+  setupObserver() {
+    const options = {
+      root: null,
+      rootMargin: '50px',
+      threshold: 0.01
+    };
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          this.loadElement(entry.target);
+          this.observer.unobserve(entry.target);
+        }
+      });
+    }, options);
 
     this.images.forEach(img => this.observer.observe(img));
     this.iframes.forEach(iframe => this.observer.observe(iframe));
-  }
-
-  handleIntersection(entries) {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        this.loadElement(entry.target);
-        this.observer.unobserve(entry.target);
-      }
-    });
   }
 
   loadElement(element) {
@@ -816,7 +799,6 @@ class LazyLoader {
     if (srcset) {
       img.srcset = srcset;
     }
-
     if (src) {
       img.src = src;
     }
@@ -835,14 +817,13 @@ class LazyLoader {
 
   loadIframe(iframe) {
     const src = iframe.getAttribute('data-src');
-    
     if (src) {
       iframe.src = src;
       iframe.removeAttribute('data-src');
     }
   }
 
-  loadAllImages() {
+  loadAll() {
     this.images.forEach(img => this.loadImage(img));
     this.iframes.forEach(iframe => this.loadIframe(iframe));
   }
@@ -857,7 +838,7 @@ class HeaderScroll {
     this.header = document.querySelector('header, .header');
     this.lastScroll = 0;
     this.scrollThreshold = 100;
-
+    
     this.init();
   }
 
@@ -870,7 +851,7 @@ class HeaderScroll {
   handleScroll() {
     const currentScroll = window.pageYOffset;
 
-    // Add scrolled class
+    // Add scrolled class when past threshold
     if (currentScroll > this.scrollThreshold) {
       this.header.classList.add('scrolled');
     } else {
@@ -889,65 +870,185 @@ class HeaderScroll {
 }
 
 // ============================================
-// BACK TO TOP BUTTON
+// MODAL HANDLER
 // ============================================
 
-class BackToTop {
+class ModalHandler {
   constructor() {
-    this.button = document.querySelector('.back-to-top');
-    this.showThreshold = 300;
-
+    this.modals = document.querySelectorAll('[data-modal]');
+    this.triggers = document.querySelectorAll('[data-modal-trigger]');
+    this.activeModal = null;
+    
     this.init();
   }
 
   init() {
-    if (!this.button) return;
+    if (this.triggers.length === 0) return;
 
-    window.addEventListener('scroll', throttle(() => this.handleScroll(), 100));
-    this.button.addEventListener('click', () => this.scrollToTop());
+    this.bindEvents();
   }
 
-  handleScroll() {
-    if (window.pageYOffset > this.showThreshold) {
-      this.button.classList.add('visible');
-    } else {
-      this.button.classList.remove('visible');
+  bindEvents() {
+    // Trigger buttons
+    this.triggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const modalId = trigger.getAttribute('data-modal-trigger');
+        this.open(modalId);
+      });
+    });
+
+    // Close buttons
+    this.modals.forEach(modal => {
+      const closeButtons = modal.querySelectorAll('[data-modal-close]');
+      closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => this.close());
+      });
+
+      // Close on overlay click
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          this.close();
+        }
+      });
+    });
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.activeModal) {
+        this.close();
+      }
+    });
+  }
+
+  open(modalId) {
+    const modal = document.querySelector(`[data-modal="${modalId}"]`);
+    if (!modal) return;
+
+    this.activeModal = modal;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    modal.setAttribute('aria-hidden', 'false');
+
+    // Focus first focusable element
+    const focusable = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (focusable) {
+      setTimeout(() => focusable.focus(), 100);
     }
   }
 
-  scrollToTop() {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+  close() {
+    if (!this.activeModal) return;
+
+    this.activeModal.classList.remove('active');
+    this.activeModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    this.activeModal = null;
   }
 }
 
 // ============================================
-// APPLICATION INITIALIZATION
+// ACCORDION
+// ============================================
+
+class Accordion {
+  constructor(element) {
+    this.accordion = element;
+    this.items = Array.from(element.querySelectorAll('.accordion-item'));
+    this.allowMultiple = element.hasAttribute('data-allow-multiple');
+    
+    this.init();
+  }
+
+  init() {
+    if (this.items.length === 0) return;
+
+    this.items.forEach((item, index) => {
+      const trigger = item.querySelector('.accordion-trigger');
+      const content = item.querySelector('.accordion-content');
+
+      if (!trigger || !content) return;
+
+      // Setup ARIA attributes
+      const id = `accordion-${Date.now()}-${index}`;
+      trigger.setAttribute('aria-controls', id);
+      trigger.setAttribute('aria-expanded', 'false');
+      content.setAttribute('id', id);
+
+      trigger.addEventListener('click', () => this.toggle(item));
+    });
+  }
+
+  toggle(item) {
+    const trigger = item.querySelector('.accordion-trigger');
+    const content = item.querySelector('.accordion-content');
+    const isOpen = item.classList.contains('active');
+
+    if (!this.allowMultiple) {
+      this.closeAll();
+    }
+
+    if (isOpen) {
+      this.close(item);
+    } else {
+      this.open(item);
+    }
+  }
+
+  open(item) {
+    const trigger = item.querySelector('.accordion-trigger');
+    const content = item.querySelector('.accordion-content');
+
+    item.classList.add('active');
+    trigger.setAttribute('aria-expanded', 'true');
+    content.style.maxHeight = content.scrollHeight + 'px';
+  }
+
+  close(item) {
+    const trigger = item.querySelector('.accordion-trigger');
+    const content = item.querySelector('.accordion-content');
+
+    item.classList.remove('active');
+    trigger.setAttribute('aria-expanded', 'false');
+    content.style.maxHeight = '0';
+  }
+
+  closeAll() {
+    this.items.forEach(item => this.close(item));
+  }
+}
+
+// ============================================
+// INITIALIZATION
 // ============================================
 
 class App {
   constructor() {
     this.components = [];
-    this.isInitialized = false;
   }
 
   init() {
-    if (this.isInitialized) {
-      console.warn('App already initialized');
-      return;
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+    } else {
+      this.initializeComponents();
     }
+  }
 
+  initializeComponents() {
     try {
-      // Initialize core components
+      // Initialize mobile navigation
       this.components.push(new MobileNavigation());
+
+      // Initialize smooth scrolling
       this.components.push(new SmoothScroll());
+
+      // Initialize scroll animations
       this.components.push(new ScrollAnimations());
+
+      // Initialize statistics counter
       this.components.push(new StatisticsCounter());
-      this.components.push(new LazyLoader());
-      this.components.push(new HeaderScroll());
-      this.components.push(new BackToTop());
 
       // Initialize carousels
       document.querySelectorAll('.carousel').forEach(carousel => {
@@ -959,10 +1060,23 @@ class App {
         this.components.push(new FormValidator(form));
       });
 
-      this.isInitialized = true;
-      console.log('App initialized successfully');
+      // Initialize lazy loading
+      this.components.push(new LazyLoader());
+
+      // Initialize header scroll behavior
+      this.components.push(new HeaderScroll());
+
+      // Initialize modals
+      this.components.push(new ModalHandler());
+
+      // Initialize accordions
+      document.querySelectorAll('.accordion').forEach(accordion => {
+        this.components.push(new Accordion(accordion));
+      });
+
+      console.log('✅ Application initialized successfully');
     } catch (error) {
-      console.error('App initialization error:', error);
+      console.error('❌ Error initializing application:', error);
     }
   }
 
@@ -973,21 +1087,15 @@ class App {
       }
     });
     this.components = [];
-    this.isInitialized = false;
   }
 }
 
 // ============================================
-// INITIALIZE ON DOM READY
+// START APPLICATION
 // ============================================
 
 const app = new App();
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => app.init());
-} else {
-  app.init();
-}
+app.init();
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
@@ -1001,7 +1109,8 @@ if (typeof module !== 'undefined' && module.exports) {
     FormValidator,
     LazyLoader,
     HeaderScroll,
-    BackToTop,
+    ModalHandler,
+    Accordion,
     debounce,
     throttle,
     isInViewport,
