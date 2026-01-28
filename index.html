@@ -3,472 +3,687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Advanced football prediction platform powered by AI. Get accurate match predictions, statistical analysis, and winning insights for football betting.">
+    <meta name="keywords" content="football predictions, soccer predictions, betting tips, match analysis, AI predictions">
+    <meta name="author" content="Football Predictor">
     
-    <!-- Primary Meta Tags -->
-    <title>TaskFlow - Streamline Your Workflow & Boost Productivity</title>
-    <meta name="title" content="TaskFlow - Streamline Your Workflow & Boost Productivity">
-    <meta name="description" content="TaskFlow is the ultimate productivity platform that helps teams collaborate, manage tasks, and achieve goals faster. Start your free trial today and transform the way you work.">
-    <meta name="keywords" content="task management, productivity, project management, team collaboration, workflow automation">
-    <meta name="author" content="TaskFlow">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.taskflow.com/">
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://ka-f.fontawesome.com">
     
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.taskflow.com/">
-    <meta property="og:title" content="TaskFlow - Streamline Your Workflow & Boost Productivity">
-    <meta property="og:description" content="TaskFlow is the ultimate productivity platform that helps teams collaborate, manage tasks, and achieve goals faster. Start your free trial today and transform the way you work.">
-    <meta property="og:image" content="https://www.taskflow.com/images/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="TaskFlow">
-    <meta property="og:locale" content="en_US">
+    <title>Football Predictor - Predict. Analyze. Win.</title>
     
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://www.taskflow.com/">
-    <meta name="twitter:title" content="TaskFlow - Streamline Your Workflow & Boost Productivity">
-    <meta name="twitter:description" content="TaskFlow is the ultimate productivity platform that helps teams collaborate, manage tasks, and achieve goals faster. Start your free trial today and transform the way you work.">
-    <meta name="twitter:image" content="https://www.taskflow.com/images/twitter-image.jpg">
-    <meta name="twitter:creator" content="@taskflow">
-    <meta name="twitter:site" content="@taskflow">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#4F46E5">
-    
-    <!-- Font Awesome CDN -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
     
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "TaskFlow",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web, iOS, Android",
-      "description": "TaskFlow is the ultimate productivity platform that helps teams collaborate, manage tasks, and achieve goals faster.",
-      "url": "https://www.taskflow.com/",
-      "image": "https://www.taskflow.com/images/logo.png",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD",
-        "priceValidUntil": "2024-12-31",
-        "availability": "https://schema.org/InStock"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "2547",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
-      "author": {
-        "@type": "Organization",
-        "name": "TaskFlow Inc.",
-        "url": "https://www.taskflow.com/"
-      }
-    }
-    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #10b981;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .cta-button {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            overflow: hidden;
+        }
+        
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(30, 64, 175, 0.85));
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--primary-color);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: 2px solid var(--white);
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--primary-color);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: var(--bg-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .testimonial-card {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+        
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .testimonial-info h4 {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .testimonial-rating {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+        
+        .testimonial-text {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-style: italic;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--white);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .features-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="skip-to-main">Skip to main content</a>
-    
-    <!-- Header Section -->
-    <header class="header" role="banner">
-        <nav class="navbar" role="navigation" aria-label="Main navigation">
-            <div class="container">
-                <div class="navbar-brand">
-                    <a href="/" class="logo" aria-label="TaskFlow Home">
-                        <i class="fas fa-tasks" aria-hidden="true"></i>
-                        <span>TaskFlow</span>
-                    </a>
-                    <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="navbar-menu">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-                </div>
-                <div class="navbar-menu" id="navbar-menu">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="#features" class="nav-link">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#how-it-works" class="nav-link">How It Works</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#testimonials" class="nav-link">Testimonials</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#pricing" class="nav-link">Pricing</a>
-                        </li>
-                    </ul>
-                    <div class="navbar-actions">
-                        <a href="#login" class="btn btn-secondary">Log In</a>
-                        <a href="#signup" class="btn btn-primary">Start Free Trial</a>
-                    </div>
-                </div>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-futbol"></i>
+                Football Predictor
             </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" class="cta-button">Get Started</a></li>
+            </ul>
         </nav>
     </header>
-    
-    <!-- Main Content -->
-    <main id="main-content" role="main">
-        
-        <!-- Hero Section -->
-        <section class="hero" id="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <h1 class="hero-title">
-                            Streamline Your Workflow & <span class="highlight">Boost Productivity</span>
-                        </h1>
-                        <p class="hero-description">
-                            TaskFlow is the ultimate productivity platform that helps teams collaborate, manage tasks, and achieve goals faster. Join thousands of successful teams worldwide.
-                        </p>
-                        <div class="hero-actions">
-                            <a href="#signup" class="btn btn-primary btn-lg">
-                                <span>Start Free Trial</span>
-                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                            </a>
-                            <a href="#demo" class="btn btn-outline btn-lg">
-                                <i class="fas fa-play-circle" aria-hidden="true"></i>
-                                <span>Watch Demo</span>
-                            </a>
-                        </div>
-                        <div class="hero-stats">
-                            <div class="stat-item">
-                                <strong>50K+</strong>
-                                <span>Active Users</span>
-                            </div>
-                            <div class="stat-item">
-                                <strong>4.8/5</strong>
-                                <span>User Rating</span>
-                            </div>
-                            <div class="stat-item">
-                                <strong>99.9%</strong>
-                                <span>Uptime</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hero-image">
-                        <img src="/images/hero-dashboard.png" alt="TaskFlow Dashboard Interface" width="600" height="450" loading="eager">
-                        <div class="hero-image-decoration" aria-hidden="true"></div>
-                    </div>
-                </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img 
+            src="https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1920&q=80&auto=format&fit=crop" 
+            srcset="https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=640&q=80&auto=format&fit=crop 640w,
+                    https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1280&q=80&auto=format&fit=crop 1280w,
+                    https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1920&q=80&auto=format&fit=crop 1920w"
+            sizes="100vw"
+            alt="Football stadium"
+            class="hero-background"
+            loading="eager">
+        <div class="hero-content">
+            <h1>Predict. Analyze. Win.</h1>
+            <p>Harness the power of advanced AI and statistical analysis to make informed football predictions. Join thousands of successful bettors who trust our platform.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">
+                    Start Predicting <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#features" class="btn-secondary">Learn More</a>
             </div>
-        </section>
-        
-        <!-- Features Section -->
-        <section class="features" id="features">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Powerful Features for Modern Teams</h2>
-                    <p class="section-description">
-                        Everything you need to manage projects, collaborate with your team, and deliver results on time.
-                    </p>
-                </div>
-                <div class="features-grid">
-                    <article class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-tasks" aria-hidden="true"></i>
-                        </div>
-                        <h3 class="feature-title">Task Management</h3>
-                        <p class="feature-description">
-                            Create, assign, and track tasks with ease. Set priorities, deadlines, and dependencies to keep your projects on track.
-                        </p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-users" aria-hidden="true"></i>
-                        </div>
-                        <h3 class="feature-title">Team Collaboration</h3>
-                        <p class="feature-description">
-                            Work together seamlessly with real-time updates, comments, file sharing, and integrated communication tools.
-                        </p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line" aria-hidden="true"></i>
-                        </div>
-                        <h3 class="feature-title">Analytics & Reporting</h3>
-                        <p class="feature-description">
-                            Gain insights into team performance, project progress, and productivity metrics with comprehensive analytics.
-                        </p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-clock" aria-hidden="true"></i>
-                        </div>
-                        <h3 class="feature-title">Time Tracking</h3>
-                        <p class="feature-description">
-                            Monitor time spent on tasks and projects. Generate detailed timesheets and improve resource allocation.
-                        </p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
-                        </div>
-                        <h3 class="feature-title">Integrations</h3>
-                        <p class="feature-description">
-                            Connect with your favorite tools including Slack, Google Drive, GitHub, and 100+ other applications.
-                        </p>
-                    </article>
-                    <article class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-mobile-alt" aria-hidden="true"></i>
-                        </div>
-                        <h3 class="feature-title">Mobile Apps</h3>
-                        <p class="feature-description">
-                            Stay productive on the go with native iOS and Android apps. Access your work from anywhere, anytime.
-                        </p>
-                    </article>
-                </div>
-            </div>
-        </section>
-        
-        <!-- How It Works Section -->
-        <section class="how-it-works" id="how-it-works">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">How TaskFlow Works</h2>
-                    <p class="section-description">
-                        Get started in minutes and transform your team's productivity with our simple three-step process.
-                    </p>
-                </div>
-                <div class="steps-container">
-                    <article class="step-item">
-                        <div class="step-number" aria-hidden="true">1</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-user-plus" aria-hidden="true"></i>
-                            </div>
-                            <h3 class="step-title">Create Your Account</h3>
-                            <p class="step-description">
-                                Sign up for free in seconds. No credit card required. Invite your team members and set up your workspace.
-                            </p>
-                        </div>
-                    </article>
-                    <article class="step-item">
-                        <div class="step-number" aria-hidden="true">2</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-project-diagram" aria-hidden="true"></i>
-                            </div>
-                            <h3 class="step-title">Organize Your Projects</h3>
-                            <p class="step-description">
-                                Create projects, add tasks, set deadlines, and assign team members. Use boards, lists, or calendar views.
-                            </p>
-                        </div>
-                    </article>
-                    <article class="step-item">
-                        <div class="step-number" aria-hidden="true">3</div>
-                        <div class="step-content">
-                            <div class="step-icon">
-                                <i class="fas fa-rocket" aria-hidden="true"></i>
-                            </div>
-                            <h3 class="step-title">Collaborate & Deliver</h3>
-                            <p class="step-description">
-                                Work together in real-time, track progress, and deliver projects on time. Celebrate your team's success!
-                            </p>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Testimonials Section -->
-        <section class="testimonials" id="testimonials">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">What Our Customers Say</h2>
-                    <p class="section-description">
-                        Join thousands of satisfied customers who have transformed their workflow with TaskFlow.
-                    </p>
-                </div>
-                <div class="testimonials-grid">
-                    <article class="testimonial-card">
-                        <div class="testimonial-rating" aria-label="5 out of 5 stars">
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                        </div>
-                        <blockquote class="testimonial-text">
-                            "TaskFlow has completely transformed how our team works. We've increased productivity by 40% and everyone loves using it. The interface is intuitive and the features are exactly what we needed."
-                        </blockquote>
-                        <div class="testimonial-author">
-                            <img src="/images/testimonial-1.jpg" alt="Sarah Johnson" class="author-avatar" width="48" height="48" loading="lazy">
-                            <div class="author-info">
-                                <cite class="author-name">Sarah Johnson</cite>
-                                <p class="author-title">CEO, TechStart Inc.</p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="testimonial-card">
-                        <div class="testimonial-rating" aria-label="5 out of 5 stars">
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                        </div>
-                        <blockquote class="testimonial-text">
-                            "The best project management tool we've ever used. The collaboration features are outstanding and the mobile app keeps us connected wherever we are. Highly recommend!"
-                        </blockquote>
-                        <div class="testimonial-author">
-                            <img src="/images/testimonial-2.jpg" alt="Michael Chen" class="author-avatar" width="48" height="48" loading="lazy">
-                            <div class="author-info">
-                                <cite class="author-name">Michael Chen</cite>
-                                <p class="author-title">Project Manager, Design Studio</p>
-                            </div>
-                        </div>
-                    </article>
-                    <article class="testimonial-card">
-                        <div class="testimonial-rating" aria-label="5 out of 5 stars">
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                            <i class="fas fa-star" aria-hidden="true"></i>
-                        </div>
-                        <blockquote class="testimonial-text">
-                            "TaskFlow's analytics have given us incredible insights into our team's performance. We can now make data-driven decisions and optimize our workflow like never before."
-                        </blockquote>
-                        <div class="testimonial-author">
-                            <img src="/images/testimonial-3.jpg" alt="Emily Rodriguez" class="author-avatar" width="48" height="48" loading="lazy">
-                            <div class="author-info">
-                                <cite class="author-name">Emily Rodriguez</cite>
-                                <p class="author-title">Operations Director, Global Corp</p>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-        
-        <!-- CTA Section -->
-        <section class="cta" id="cta">
-            <div class="container">
-                <div class="cta-content">
-                    <h2 class="cta-title">Ready to Transform Your Workflow?</h2>
-                    <p class="cta-description">
-                        Join over 50,000 teams who are already using TaskFlow to achieve their goals faster. Start your free 14-day trial today—no credit card required.
-                    </p>
-                    <div class="cta-actions">
-                        <a href="#signup" class="btn btn-primary btn-lg">
-                            <span>Start Free Trial</span>
-                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                        </a>
-                        <a href="#contact" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-envelope" aria-hidden="true"></i>
-                            <span>Contact Sales</span>
-                        </a>
-                    </div>
-                    <p class="cta-note">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i>
-                        Free 14-day trial • No credit card required • Cancel anytime
-                    </p>
-                </div>
-            </div>
-        </section>
-        
-    </main>
-    
-    <!-- Footer Section -->
-    <footer class="footer" role="contentinfo">
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-column footer-brand">
-                    <a href="/" class="footer-logo" aria-label="TaskFlow Home">
-                        <i class="fas fa-tasks" aria-hidden="true"></i>
-                        <span>TaskFlow</span>
-                    </a>
-                    <p class="footer-description">
-                        The ultimate productivity platform for modern teams. Streamline your workflow and achieve more together.
-                    </p>
-                    <div class="social-links">
-                        <a href="https://twitter.com/taskflow" class="social-link" aria-label="Follow us on Twitter" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-twitter" aria-hidden="true"></i>
-                        </a>
-                        <a href="https://facebook.com/taskflow" class="social-link" aria-label="Follow us on Facebook" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-facebook" aria-hidden="true"></i>
-                        </a>
-                        <a href="https://linkedin.com/company/taskflow" class="social-link" aria-label="Follow us on LinkedIn" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-linkedin" aria-hidden="true"></i>
-                        </a>
-                        <a href="https://instagram.com/taskflow" class="social-link" aria-label="Follow us on Instagram" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-instagram" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-heading">Product</h3>
-                    <ul class="footer-links">
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#pricing">Pricing</a></li>
-                        <li><a href="#integrations">Integrations</a></li>
-                        <li><a href="#updates">Updates</a></li>
-                        <li><a href="#roadmap">Roadmap</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-heading">Company</h3>
-                    <ul class="footer-links">
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#careers">Careers</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#press">Press Kit</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-heading">Resources</h3>
-                    <ul class="footer-links">
-                        <li><a href="#help">Help Center</a></li>
-                        <li><a href="#docs">Documentation</a></li>
-                        <li><a href="#api">API Reference</a></li>
-                        <li><a href="#community">Community</a></li>
-                        <li><a href="#status">System Status</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3 class="footer-heading">Legal</h3>
-                    <ul class="footer-links">
-                        <li><a href="#privacy">Privacy Policy</a></li>
-                        <li><a href="#terms">Terms of Service</a></li>
-                        <li><a href="#security">Security</a></li>
-                        <li><a href="#gdpr">GDPR</a></li>
-                        <li><a href="#cookies">Cookie Policy</a></li>
-                    </ul>
-                </div>
+            <div class="section-header">
+                <h2>Powerful Features for Winning Predictions</h2>
+                <p>Everything you need to make data-driven football predictions and maximize your success rate</p>
             </div>
-            <div class="footer-bottom">
-                <p class="copyright">
-                    &copy; <span id="current-year">2024</span> TaskFlow Inc. All rights reserved.
-                </p>
-                <div class="footer-bottom-links">
-                    <a href="#privacy">Privacy</a>
-                    <a href="#terms">Terms</a>
-                    <a href="#sitemap">Sitemap</a>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered Predictions</h3>
+                    <p>Our advanced machine learning algorithms analyze thousands of data points to provide accurate match predictions with confidence scores.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Real-Time Statistics</h3>
+                    <p>Access comprehensive team and player statistics updated in real-time, including form, head-to-head records, and performance metrics.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>League Coverage</h3>
+                    <p>Get predictions for major leagues worldwide including Premier League, La Liga, Serie A, Bundesliga, and over 100 other competitions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3>Historical Analysis</h3>
+                    <p>Deep dive into historical match data and trends to identify patterns and make more informed betting decisions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Smart Alerts</h3>
+                    <p>Receive instant notifications for high-confidence predictions, lineup changes, and important match updates.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Expert Community</h3>
+                    <p>Connect with professional tipsters and fellow bettors to share insights, strategies, and winning predictions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Optimized</h3>
+                    <p>Access predictions on-the-go with our fully responsive platform that works seamlessly on all devices.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Proven Track Record</h3>
+                    <p>Transparent performance tracking with verified results and detailed accuracy metrics for all our predictions.</p>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Users Say</h2>
+                <p>Join thousands of satisfied users who have transformed their betting strategy</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img 
+                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&q=80&auto=format&fit=crop" 
+                            srcset="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&q=80&auto=format&fit=crop 1x,
+                                    https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&q=80&auto=format&fit=crop 2x"
+                            alt="James Mitchell"
+                            class="testimonial-avatar"
+                            loading="lazy">
+                        <div class="testimonial-info">
+                            <h4>James Mitchell</h4>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"This platform has completely changed my approach to football betting. The AI predictions are incredibly accurate, and I've seen a 40% increase in my success rate!"</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img 
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&q=80&auto=format&fit=crop" 
+                            srcset="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&q=80&auto=format&fit=crop 1x,
+                                    https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&q=80&auto=format&fit=crop 2x"
+                            alt="Sarah Johnson"
+                            class="testimonial-avatar"
+                            loading="lazy">
+                        <div class="testimonial-info">
+                            <h4>Sarah Johnson</h4>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"The real-time statistics and historical analysis features are game-changers. I can make informed decisions backed by solid data. Highly recommended!"</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img 
+                            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&q=80&auto=format&fit=crop" 
+                            srcset="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&q=80&auto=format&fit=crop 1x,
+                                    https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&q=80&auto=format&fit=crop 2x"
+                            alt="Michael Chen"
+                            class="testimonial-avatar"
+                            loading="lazy">
+                        <div class="testimonial-info">
+                            <h4>Michael Chen</h4>
+                            <div class="testimonial-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"As a professional bettor, I've tried many platforms. This one stands out with its accuracy and comprehensive coverage. The expert community is also fantastic!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Winning?</h2>
+            <p>Join over 50,000 users who are already making smarter predictions</p>
+            <a href="#" class="btn-primary" style="background: var(--white); color: var(--primary-color);">
+                Get Started Free <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-futbol"></i> Football Predictor</h3>
+                <p>Your trusted partner for accurate football predictions and data-driven betting insights.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#features">Features</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#">Pricing</a>
+                <a href="#">About Us</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <a href="#">Blog</a>
+                <a href="#">Help Center</a>
+                <a href="#">API Documentation</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> support@footballpredictor.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Prediction Street, Sports City, SC 12345</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Football Predictor. All rights reserved. | Privacy Policy | Cookie Policy</p>
+        </div>
     </footer>
-    
-    <!-- JavaScript -->
-    <script src="app.js" defer></script>
 </body>
 </html>
